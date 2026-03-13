@@ -19,25 +19,23 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Ungültige Anfrage." }, { status: 400 });
   }
 
-  // 1. Create or retrieve the Supabase user (email-only, no password)
-  //    inviteUserByEmail sends a magic link so they can access the dashboard later.
-  const { data: invite, error: inviteError } =
-    await supabaseAdmin.auth.admin.inviteUserByEmail(email);
+  // 1. Create or retrieve the Supabase user — no emails sent, magic link issued at /success
+  const { data: created, error: createError } =
+    await supabaseAdmin.auth.admin.createUser({
+      email,
+      email_confirm: true,
+    });
 
-  if (inviteError && inviteError.message !== "User already registered") {
-    console.error("Auth error:", inviteError);
+  let userId = created?.user?.id;
+
+  if (!userId) {
+    // User already exists — look them up
+    const { data: { users } } = await supabaseAdmin.auth.admin.listUsers({ perPage: 1000 });
+    userId = users.find((u) => u.email === email)?.id;
+  }
+
+  if (!userId) {
     return NextResponse.json({ error: "Konto konnte nicht erstellt werden." }, { status: 500 });
-  }
-
-  // If already registered, look them up
-  let userId = invite?.user?.id;
-  if (!userId) {
-    const { data: list } = await supabaseAdmin.auth.admin.listUsers();
-    userId = list?.users.find((u) => u.email === email)?.id;
-  }
-
-  if (!userId) {
-    return NextResponse.json({ error: "Benutzer nicht gefunden." }, { status: 500 });
   }
 
   // 2. Save the case to DB with status pending_payment
@@ -66,7 +64,7 @@ export async function POST(req: NextRequest) {
     caseId: caseRow.id,
     email,
     amountCents: (triage.feeAmount ?? 29) * 100,
-    successUrl: `${origin}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    successUrl: `${origin}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancelUrl: `${origin}/action`,
   });
 

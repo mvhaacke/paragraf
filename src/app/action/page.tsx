@@ -96,7 +96,7 @@ export default function ActionPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="ihre@email.de"
-              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent"
+              className="w-full border border-gray-200 rounded-lg px-4 py-3 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent [&:-webkit-autofill]:shadow-[inset_0_0_0px_1000px_white] [&:-webkit-autofill]:[color:black]"
             />
             <p className="text-xs text-gray-400 mt-1.5">
               Ihr Konto wird automatisch erstellt. Kein Passwort nötig.
