@@ -1,5 +1,6 @@
 export type CaseType =
   | "mahnbescheid"
+  | "vollstreckungsbescheid"
   | "consumer_debt"
   | "rental_deposit"
   | "wrongful_dismissal"
@@ -33,9 +34,9 @@ export interface TriageResult {
   daysRemaining: number | null;
   creditorName: string | null;
   claimedAmount: string | null;
-  caseReference: string | null;  // Mahnbescheid only
-  courtName: string | null;      // Mahnbescheid only
-  courtAddress: string | null;   // Mahnbescheid only
+  caseReference: string | null;  // Mahnbescheid + Vollstreckungsbescheid only
+  courtName: string | null;      // Mahnbescheid + Vollstreckungsbescheid only
+  courtAddress: string | null;   // Mahnbescheid + Vollstreckungsbescheid only
 
   // Fee
   feeType: FeeType;
