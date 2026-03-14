@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
   }
 
   // 3. Create Stripe checkout session with the real case ID in metadata
-  const origin = req.headers.get("origin") ?? "http://localhost:3000";
+  const origin = process.env.NEXT_PUBLIC_APP_URL ?? req.headers.get("origin") ?? "http://localhost:3000";
 
   const session = await createCheckoutSession({
     caseId: caseRow.id,

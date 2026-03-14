@@ -28,7 +28,12 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-white px-4 py-12">
       <div className="max-w-lg mx-auto space-y-8">
-        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider">Ihre Fälle</p>
+        <div className="flex items-center justify-between">
+          <h1 className="text-xl font-semibold text-gray-900">Ihre Fälle</h1>
+          <Link href="/" className="text-sm text-gray-500 hover:text-gray-900 transition-colors">
+            + Neues Dokument
+          </Link>
+        </div>
 
         {!cases || cases.length === 0 ? (
           <div className="text-center py-16 text-gray-400 text-sm">
