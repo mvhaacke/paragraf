@@ -58,8 +58,9 @@ export default function UploadPage() {
           Paragraf
         </h1>
         <p className="text-gray-500 mb-10 text-base leading-relaxed">
-          Laden Sie Ihr Rechtsdokument hoch — wir erklären Ihnen in einfacher
-          Sprache, was zu tun ist, und erstellen die nötige Antwort für Sie.
+          Sie haben ein Rechtsdokument erhalten und wissen nicht, was es bedeutet.
+          Laden Sie es hoch — wir erklären was darin steht und erstellen das
+          Antwortdokument für Sie.
         </p>
 
         <button
@@ -107,12 +108,12 @@ export default function UploadPage() {
 
         <div className="mt-10 border-t border-gray-100 pt-8">
           <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-4">
-            Unterstützte Fälle
+            Womit wir helfen
           </p>
           <ul className="space-y-2">
             {[
-              ["Mahnbescheid", "Gerichtlicher Zahlungsbefehl"],
-              ["Inkassoschreiben", "Forderungsschreiben von Inkassobüros"],
+              ["Mahnbescheid", "Schreiben vom Amtsgericht"],
+              ["Inkassoschreiben", "Schreiben von Inkassobüros"],
             ].map(([title, desc]) => (
               <li key={title} className="flex items-start gap-2 text-sm">
                 <FileText className="w-4 h-4 text-gray-300 mt-0.5 shrink-0" />

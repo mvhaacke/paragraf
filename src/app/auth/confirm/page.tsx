@@ -17,28 +17,35 @@ export default function AuthConfirmPage() {
     const next = searchParams.get("next") ?? hashParams.get("next") ?? "/dashboard";
     const supabase = createClient();
 
-    // Implicit flow — tokens in hash
-    const accessToken = hashParams.get("access_token");
-    const refreshToken = hashParams.get("refresh_token");
-    if (accessToken && refreshToken) {
-      supabase.auth
-        .setSession({ access_token: accessToken, refresh_token: refreshToken })
-        .then(({ error }) => {
-          router.replace(error ? "/dashboard/login?error=link_expired" : next);
-        });
-      return;
-    }
+    async function handleAuth() {
+      // Clear any stale local session so its invalid refresh token doesn't
+      // conflict with the new magic-link session we're about to set.
+      await supabase.auth.signOut({ scope: "local" });
 
-    // PKCE flow — code in query params
-    const code = searchParams.get("code");
-    if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      // PKCE flow — code in query params (admin-generated links use this)
+      const code = searchParams.get("code");
+      if (code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
         router.replace(error ? "/dashboard/login?error=link_expired" : next);
-      });
-      return;
+        return;
+      }
+
+      // Implicit flow — tokens in hash fragment
+      const accessToken = hashParams.get("access_token");
+      const refreshToken = hashParams.get("refresh_token");
+      if (accessToken && refreshToken) {
+        const { error } = await supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: refreshToken,
+        });
+        router.replace(error ? "/dashboard/login?error=link_expired" : next);
+        return;
+      }
+
+      router.replace("/dashboard/login?error=link_expired");
     }
 
-    router.replace("/dashboard/login?error=link_expired");
+    handleAuth();
   }, [router]);
 
   return (

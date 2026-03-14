@@ -15,25 +15,31 @@ export type CaseStatus =
 
 export type FeeType = "flat" | "success";
 
+/**
+ * Structured data extracted from the uploaded document by the LLM.
+ * No copy fields — all display text is generated from templates in lib/templates.ts.
+ *
+ * When wiring up real AI calls, use TriageExtractionSchema (Zod) as the tool
+ * definition so the model is forced to return this exact shape.
+ */
 export interface TriageResult {
   caseType: CaseType;
   documentTitle: string;
-  deadline: Date | null;
-  daysRemaining: number | null;
-  summary: string;
-  consequence: string;
-  recommendation: string;
-  recommendationReasoning: string;
-  feeType: FeeType;
-  feeAmount: number | null; // EUR, null for success-fee cases
   isInScope: boolean;
   outOfScopeMessage?: string;
-  // Extracted from the document — used to render the response preview
-  caseReference: string | null;   // Aktenzeichen, e.g. "12 B 1234/25"
-  courtName: string | null;       // e.g. "Amtsgericht Hagen"
-  courtAddress: string | null;    // full postal address of the court
-  claimedAmount: string | null;   // e.g. "1.240,00 €"
+
+  // Extracted from the document
+  deadline: Date | null;
+  daysRemaining: number | null;
   creditorName: string | null;
+  claimedAmount: string | null;
+  caseReference: string | null;  // Mahnbescheid only
+  courtName: string | null;      // Mahnbescheid only
+  courtAddress: string | null;   // Mahnbescheid only
+
+  // Fee
+  feeType: FeeType;
+  feeAmount: number | null;
 }
 
 export interface Case {
