@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { SuccessClient } from "./SuccessClient";
 
 const supabaseAdmin = createClient(
@@ -26,7 +27,10 @@ export default async function SuccessPage({ searchParams }: Props) {
   const { data: { user } } = await supabaseAdmin.auth.admin.getUserById(caseRow.user_id);
   if (!user?.email) redirect("/");
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const reqHeaders = await headers();
+  const host = reqHeaders.get("x-forwarded-host") ?? reqHeaders.get("host");
+  const proto = reqHeaders.get("x-forwarded-proto") ?? "http";
+  const appUrl = host ? `${proto}://${host}` : "http://localhost:3000";
 
   const { data, error } = await supabaseAdmin.auth.admin.generateLink({
     type: "magiclink",
