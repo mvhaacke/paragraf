@@ -6,29 +6,32 @@ const client = new Anthropic(); // reads ANTHROPIC_API_KEY from env
 
 // ── Zod schemas — used to parse and validate LLM tool output ─────────────────
 
+// LLM tools sometimes return undefined for optional fields instead of null.
+const nullableStr = z.string().nullish().transform(v => v ?? null);
+
 const ClassificationSchema = z.object({
   isInScope: z.boolean(),
   caseType: z.enum(["mahnbescheid", "vollstreckungsbescheid", "consumer_debt", "none"]),
-  outOfScopeReason: z.string().nullable(),
+  outOfScopeReason: nullableStr,
   documentTitle: z.string(),
 });
 
 const MahnbescheidSchema = z.object({
-  courtName: z.string().nullable(),
-  courtAddress: z.string().nullable(),
-  caseReference: z.string().nullable(),
-  issuedDate: z.string().nullable(),
-  statedDeadlineIso: z.string().nullable(),
-  claimedAmount: z.string().nullable(),
-  creditorName: z.string().nullable(),
+  courtName: nullableStr,
+  courtAddress: nullableStr,
+  caseReference: nullableStr,
+  issuedDate: nullableStr,
+  statedDeadlineIso: nullableStr,
+  claimedAmount: nullableStr,
+  creditorName: nullableStr,
 });
 
 const ConsumerDebtSchema = z.object({
-  creditorName: z.string().nullable(),
-  creditorAddress: z.string().nullable(),
-  creditorReference: z.string().nullable(),
-  claimedAmount: z.string().nullable(),
-  statedDeadlineIso: z.string().nullable(),
+  creditorName: nullableStr,
+  creditorAddress: nullableStr,
+  creditorReference: nullableStr,
+  claimedAmount: nullableStr,
+  statedDeadlineIso: nullableStr,
 });
 
 // ── JSON schemas for Claude tool definitions ──────────────────────────────────

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
+import Link from "next/link";
 import { DeadlineBadge } from "@/components/DeadlineBadge";
 import { getCaseTemplate } from "@/lib/templates";
 import { TriageResult } from "@/types";
@@ -52,6 +53,14 @@ export default function ActionPage() {
   return (
     <main className="min-h-screen flex flex-col items-center justify-center px-4 bg-white">
       <div className="w-full max-w-sm space-y-6">
+
+        <Link
+          href="/triage"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Zurück
+        </Link>
 
         <div>
           <h1 className="text-xl font-semibold text-gray-900">{tmpl.documentLabel}</h1>

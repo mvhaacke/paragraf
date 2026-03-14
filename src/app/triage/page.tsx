@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { DeadlineBadge } from "@/components/DeadlineBadge";
 import { DocumentPreview } from "@/components/DocumentPreview";
 import { getCaseTemplate } from "@/lib/templates";
@@ -75,6 +76,14 @@ export default function TriagePage() {
   return (
     <main className="min-h-screen bg-white px-4 py-16">
       <div className="w-full max-w-lg mx-auto space-y-10">
+
+        <Link
+          href="/"
+          className="inline-flex items-center gap-1.5 text-sm text-gray-400 hover:text-gray-700 transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Anderes Dokument hochladen
+        </Link>
 
         {/* 1. Document title + deadline */}
         <div className="space-y-4">

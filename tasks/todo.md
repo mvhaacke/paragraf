@@ -19,6 +19,28 @@
 - [ ] `/dashboard/[caseId]` — case detail + document download
 - [ ] `/dashboard/[caseId]/hearing` — hearing prep
 
+### Transparency copy (triage page — before payment)
+**Core principle: transparency is the product's main differentiator.**
+Users arrive scared. The outcome statistics belong on the triage page, in the options section,
+at the moment of peak anxiety — not hidden behind a paywall.
+A user who understands the process is more likely to dispute, and more likely to pay.
+
+- [ ] Add outcome context to the "Widerspruch / Bestreiten" option card on `/triage`:
+  - Mahnbescheid: "Viele Gläubiger erheben nach einem Widerspruch keine Klage — besonders
+    bei kleinen Beträgen oder wenn die Forderung schlecht belegt ist."
+  - Inkassoschreiben: "Inkassobüros haben keine behördliche Befugnis. Viele Forderungen
+    sind verjährt oder unzureichend belegt. Ein Widerspruch beendet den Kontakt häufig."
+  - Phrasing stays within Rechtsinformation — describes what typically happens procedurally,
+    never predicts the user's specific outcome.
+
+### Post-payment UX (case detail `/dashboard/[caseId]`)
+- [ ] Step-by-step guide — case-specific, pre-filled with their data
+  (court name, deadline date, creditor) so it reads like personal guidance, not a template
+- [ ] Checkable progress steps (print → send → keep copy → wait) — persisted in DB
+- [ ] Prominent deadline countdown that stays relevant post-payment
+- [ ] "Ich habe eine Antwort erhalten" — second upload slot to handle follow-up documents
+  (entry point for future upsell or Phase 2)
+
 ### API / Backend
 - [x] `POST /api/upload` — receive PDF, return triage stub
 - [x] `POST /api/generate` — create Stripe checkout session
