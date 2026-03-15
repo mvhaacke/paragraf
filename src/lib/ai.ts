@@ -172,7 +172,7 @@ async function classifyDocument(
 
   const response = await client.messages.create({
     model: "claude-sonnet-4-6",
-    max_tokens: 512,
+    max_tokens: 1024,
     tools: [{ name: "classify", description: "Classify a German legal document", input_schema: CLASSIFY_SCHEMA }],
     tool_choice: { type: "tool", name: "classify" },
     messages: [{ role: "user", content: contentBlock }],
