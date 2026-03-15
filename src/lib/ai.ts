@@ -47,7 +47,7 @@ const CLASSIFY_SCHEMA: Anthropic.Tool["input_schema"] = {
     caseType: {
       type: "string",
       enum: ["mahnbescheid", "vollstreckungsbescheid", "consumer_debt", "none"],
-      description: "mahnbescheid = payment order issued by a court (Amtsgericht, §688 ZPO) — the debtor still has 14 days to object. vollstreckungsbescheid = enforcement order issued after an unanswered Mahnbescheid (§699 ZPO) — references a prior Mahnbescheid Aktenzeichen and cites Einspruch rights. consumer_debt = private creditor or Inkasso agency letter. none = not a supported document type.",
+      description: "Use the document heading as the primary signal. mahnbescheid = heading says 'Mahnbescheid', issued by Amtsgericht (§688 ZPO). vollstreckungsbescheid = heading says 'Vollstreckungsbescheid', issued by Amtsgericht after unanswered Mahnbescheid (§699 ZPO). consumer_debt = private creditor or Inkasso agency, no court. none = anything else.",
     },
     outOfScopeReason: {
       type: "string",
@@ -146,12 +146,18 @@ function buildDocumentContent(buffer: Buffer, mimeType: string): DocumentContent
 // ── Stage 1: Classification ───────────────────────────────────────────────────
 
 const CLASSIFY_PROMPT =
-  `Du analysierst ein deutsches Rechtsdokument. Bestimme den genauen Dokumenttyp:
+  `Du analysierst ein deutsches Rechtsdokument. Bestimme den genauen Dokumenttyp anhand der Überschrift und des Inhalts.
 
-- mahnbescheid: Vom Amtsgericht ausgestellt (§688 ZPO). Überschrift "Mahnbescheid". Der Schuldner hat noch 14 Tage Widerspruchsfrist.
-- vollstreckungsbescheid: Vom Amtsgericht ausgestellt (§699 ZPO), nachdem auf einen Mahnbescheid kein Widerspruch eingelegt wurde. Überschrift "Vollstreckungsbescheid". Verweist auf ein früheres Mahnbescheid-Aktenzeichen. Der Schuldner hat noch 14 Tage Einspruchsfrist (§700 ZPO).
-- consumer_debt: Schreiben eines privaten Gläubigers oder Inkassobüros — kein Gericht.
-- none: Alle anderen Dokumenttypen (Mietrecht, Arbeitsrecht, Verträge, Abmahnungen, Steuerbescheide etc.).
+ÜBERSCHRIFT ist das wichtigste Merkmal:
+- Steht oben "Mahnbescheid" → caseType = mahnbescheid
+- Steht oben "Vollstreckungsbescheid" → caseType = vollstreckungsbescheid
+- Kein Gericht, sondern privater Absender oder Inkassobüro → caseType = consumer_debt
+- Alles andere → caseType = none
+
+Zusätzliche Merkmale zur Unterscheidung:
+- mahnbescheid (§688 ZPO): Erstforderung vom Amtsgericht, Widerspruchsfrist 14 Tage
+- vollstreckungsbescheid (§699 ZPO): Folgedokument nach unbeantworteten Mahnbescheid, enthält Einspruchshinweis (§700 ZPO), verweist auf früheres Aktenzeichen
+- consumer_debt: kein Amtsgericht als Absender, oft Inkasso, Mahnschreiben, Forderungsaufstellung
 
 Wenn der Inhalt unklar oder unleserlich ist, setze isInScope auf false mit entsprechender Begründung.`;
 
