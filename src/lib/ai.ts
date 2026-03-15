@@ -171,7 +171,7 @@ async function classifyDocument(
     : [{ type: "image", source: docContent as Anthropic.Base64ImageSource }, { type: "text", text: CLASSIFY_PROMPT }];
 
   const response = await client.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: "claude-sonnet-4-6",
     max_tokens: 512,
     tools: [{ name: "classify", description: "Classify a German legal document", input_schema: CLASSIFY_SCHEMA }],
     tool_choice: { type: "tool", name: "classify" },
